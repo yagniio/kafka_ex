@@ -208,7 +208,7 @@ defmodule KafkaEx.Server do
     {:reply, GenEvent.stream(state.event_pid), state}
   end
 
-  @wait_time 10
+  @wait_time 900
   @min_bytes 1
   @max_bytes 1_000_000
   def handle_info({:start_streaming, _topic, _partition, _offset, _handler, _auto_commit},
@@ -232,7 +232,7 @@ defmodule KafkaEx.Server do
                  end
              end
 
-    Process.send_after(self, {:start_streaming, topic, partition, offset, handler, auto_commit}, 500)
+    Process.send_after(self, {:start_streaming, topic, partition, offset, handler, auto_commit}, 1)
 
     {:noreply, state}
   end
