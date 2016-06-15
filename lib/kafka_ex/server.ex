@@ -211,12 +211,12 @@ defmodule KafkaEx.Server do
   @wait_time 900
   @min_bytes 1
   @max_bytes 1_000_000
-  def handle_info({:start_streaming, _topic, _partition, _offset, _handler, _auto_commit},
+  def handle_info({:start_streaming, _topic, _partition, _offset, _handler, _auto_commit, _poll_interval},
                   state = %State{event_pid: nil}) do
     # our streaming could have been canceled with a streaming update in-flight
     {:noreply, state}
   end
-  def handle_info({:start_streaming, topic, partition, offset, handler, auto_commit}, state) do
+  def handle_info({:start_streaming, topic, partition, offset, handler, auto_commit, poll_interval}, state) do
     true = consumer_group_if_auto_commit?(auto_commit, state)
 
     {response, state} = fetch(topic, partition, offset, @wait_time, @min_bytes, @max_bytes, state, auto_commit)
@@ -233,7 +233,7 @@ defmodule KafkaEx.Server do
              end
 
 
-    Process.send_after(self, {:start_streaming, topic, partition, offset, handler, auto_commit}, 50)
+    Process.send_after(self, {:start_streaming, topic, partition, offset, handler, auto_commit},  poll_interval)
 
     {:noreply, state}
   end

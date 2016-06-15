@@ -263,12 +263,13 @@ defmodule KafkaEx do
     handler         = Keyword.get(opts, :handler, KafkaEx.Handler)
     handler_init    = Keyword.get(opts, :handler_init, [])
     auto_commit     = Keyword.get(opts, :auto_commit, true)
+    poll_interval   = Keyword.get(opts, :poll_interval, 1)
 
     event_stream      = GenServer.call(worker_name, {:create_stream, handler, handler_init})
     retrieved_offset = current_offset(supplied_offset, partition, topic, worker_name)
 
     send(worker_name, {
-      :start_streaming, topic, partition, retrieved_offset, handler, auto_commit
+      :start_streaming, topic, partition, retrieved_offset, handler, auto_commit, poll_interval
     })
     event_stream
   end
