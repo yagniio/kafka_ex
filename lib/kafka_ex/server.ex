@@ -233,7 +233,7 @@ defmodule KafkaEx.Server do
              end
 
 
-    Process.send_after(self, {:start_streaming, topic, partition, offset, handler, auto_commit},  poll_interval)
+    Process.send_after(self, {:start_streaming, topic, partition, offset, handler, auto_commit, poll_interval},  poll_interval)
 
     {:noreply, state}
   end
